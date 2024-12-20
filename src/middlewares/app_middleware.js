@@ -4,10 +4,11 @@ export function notFound(req, res, next) {
   next(error);
 }
 
-export function errorHandler(err, req, res, _) {
+// eslint-disable-next-line no-unused-vars
+export function errorHandler(err, req, res, _next) {
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
   res.status(statusCode);
-  return res.json({
+  res.json({
     message: err.message || 'Something went wrong',
     stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack,
   });
