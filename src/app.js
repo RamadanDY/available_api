@@ -9,6 +9,7 @@ import bookingsRouter from './routes/bookings.js';
 import blocksRouter from './routes/blocks.js';
 import morgan from 'morgan';
 import socketInit from './sockets/class_socket.js';
+import setupCronJobs from './utils/cron_job.js';
 
 configDotenv();
 
@@ -32,6 +33,7 @@ app.use(`${API_URL}/bookings`, bookingsRouter);
 app.use(`${API_URL}/blocks`, blocksRouter);
 
 socketInit(io);
+setupCronJobs(io);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
