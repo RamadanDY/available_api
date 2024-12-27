@@ -6,8 +6,8 @@ export async function notifyBookingChange(io, classId) {
   const now = new Date();
   const validBookings = class_.bookings.filter((b) => now < b.timeRange.end);
 
-  io.to(`class-${classId}`).emit('bookingUpdate', {
-    classId,
-    bookings: validBookings,
-  });
+  const socketPayload = { classId, bookings: validBookings };
+
+  io.to(`class-${classId}`).emit('bookingUpdate', socketPayload);
+  io.to('all-classes').emit('bookingUpdate', socketPayload);
 }

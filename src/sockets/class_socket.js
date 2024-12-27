@@ -5,6 +5,10 @@ export default function init(io) {
   io.on('connection', (socket) => {
     console.log('A client connected:', socket.id);
 
+    socket.on('subscribe', () => {
+      socket.join('all-classes');
+    });
+
     socket.on('subscribeToClass', async (classId) => {
       if (!isValidObjectId(classId)) {
         socket.emit('error', {
@@ -46,6 +50,10 @@ export default function init(io) {
         classId,
         message: `Successfully unsubscribed from class ${classId}`,
       });
+    });
+
+    socket.on('unsubscribe', () => {
+      socket.leave('all-classes');
     });
 
     socket.on('disconnect', () => {
