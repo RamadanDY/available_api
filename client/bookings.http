@@ -15,7 +15,7 @@ Content-Type: application/json; charset=utf-8
 
 ### PATCH Booking
 # @name=UpdateBooking
-PATCH {{ host }}/{{ api }}/bookings/676377b8effe9e1c869395fe
+PATCH {{ host }}/{{ api }}/bookings/676e9ec1d520096b2a1d20ce
 Content-Type: application/json; charset=utf-8
 
 {
@@ -27,4 +27,4 @@ Content-Type: application/json; charset=utf-8
 
 ### DELETE Booking
 # @name=CancelClass
-DELETE {{ host }}/{{ api }}/bookings/676377b8effe9e1c869395fe
+DELETE {{ host }}/{{ api }}/bookings/676e9ec1d520096b2a1d20ce
