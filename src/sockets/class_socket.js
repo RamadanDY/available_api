@@ -7,6 +7,7 @@ export default function init(io) {
 
     socket.on('subscribe', () => {
       socket.join('all-classes');
+      socket.emit('subscribed', { message: `Successfully subscribed` });
     });
 
     socket.on('subscribeToClass', async (classId) => {
@@ -54,6 +55,7 @@ export default function init(io) {
 
     socket.on('unsubscribe', () => {
       socket.leave('all-classes');
+      socket.emit('unsubscribed', { message: `Successfully unsubscribed` });
     });
 
     socket.on('disconnect', () => {
