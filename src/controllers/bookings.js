@@ -137,6 +137,7 @@ export async function cancelClass(req, res, next) {
       );
 
       await relatedClass.save();
+      await notifyBookingChange(req.io, relatedClass._id);
     }
 
     res.status(204).send();
