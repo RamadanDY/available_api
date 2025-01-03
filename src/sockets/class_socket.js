@@ -10,6 +10,11 @@ export default function init(io) {
       socket.emit('subscribed', { message: `Successfully subscribed` });
     });
 
+    socket.on('unsubscribe', () => {
+      socket.leave('all-classes');
+      socket.emit('unsubscribed', { message: `Successfully unsubscribed` });
+    });
+
     socket.on('subscribeToClass', async (classId) => {
       if (!isValidObjectId(classId)) {
         socket.emit('error', {
@@ -51,11 +56,6 @@ export default function init(io) {
         classId,
         message: `Successfully unsubscribed from class ${classId}`,
       });
-    });
-
-    socket.on('unsubscribe', () => {
-      socket.leave('all-classes');
-      socket.emit('unsubscribed', { message: `Successfully unsubscribed` });
     });
 
     socket.on('disconnect', () => {
