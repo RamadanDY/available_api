@@ -68,7 +68,7 @@ export async function getClassBookings(req, res, next) {
     const class_ = await Class.findById(id).populate({
       path: 'bookings',
       match: { 'timeRange.end': { $gte: new Date() } },
-      select: 'timeRange level course',
+      select: 'timeRange level course representativeId',
       populate: {
         path: 'class',
         select: 'code fullCode',
