@@ -21,7 +21,7 @@ export async function createBlock(req, res, next) {
 export async function getBlocks(req, res, next) {
   try {
     const blocks = await Block.find()
-      .populate('classes', 'fullCode, code, isAvailable')
+      .populate('classes', 'fullCode code isAvailable')
       .sort({ code: 1 });
     if (!blocks) return next(createHttpError(404, 'Blocks not found'));
 
@@ -40,7 +40,13 @@ export async function getBlockClasses(req, res, next) {
     const block = await Block.findById(id)
       .populate({
         path: 'classes',
-        populate: { path: 'block', select: 'code' },
+        populate: [
+          { path: 'block', select: 'code' },
+          {
+            path: 'bookings',
+            select: 'timeRange course level representativeId',
+          },
+        ],
       })
       .sort({ code: 1 });
 
@@ -59,7 +65,7 @@ export async function getBlockById(req, res, next) {
   try {
     const block = await Block.findById(id).populate(
       'classes',
-      'fullCode, code, isAvailable'
+      'fullCode code isAvailable'
     );
     if (!block) return next(createHttpError(404, 'Block not found'));
 
