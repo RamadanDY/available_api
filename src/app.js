@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import classesRouter from './routes/classes.js';
 import bookingsRouter from './routes/bookings.js';
 import blocksRouter from './routes/blocks.js';
+import feedbackRouter from './routes/feedback.js';
 import morgan from 'morgan';
 import socketInit from './sockets/class_socket.js';
 import setupCronJobs from './utils/cron_job.js';
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 app.use(`${API_URL}/classes`, classesRouter);
 app.use(`${API_URL}/bookings`, bookingsRouter);
 app.use(`${API_URL}/blocks`, blocksRouter);
+app.use(`${API_URL}/feedback`, feedbackRouter);
 
 socketInit(io);
 setupCronJobs(io);
@@ -46,7 +48,7 @@ async function startServer() {
     console.info('Connected to Database!');
 
     server.listen(PORT, HOST, () => {
-      console.info(`Server listening on http://localhost/${PORT}`);
+      console.info(`Server listening on http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('Error connecting to the database:', error.message || error);
