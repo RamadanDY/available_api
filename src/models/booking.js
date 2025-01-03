@@ -8,6 +8,7 @@ const bookingSchema = new Schema(
       ref: 'Class',
       required: true,
     },
+    representativeId: { type: String, required: true },
     timeRange: {
       start: { type: Date, required: true },
       end: {
