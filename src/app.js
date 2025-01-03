@@ -40,6 +40,8 @@ setupCronJobs(io);
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 
+// console.log(process.env);
+
 async function startServer() {
   try {
     console.info('Attempting connection to Database...');
@@ -49,6 +51,7 @@ async function startServer() {
 
     server.listen(PORT, HOST, () => {
       console.info(`Server listening on http://localhost:${PORT}`);
+      console.log('server is working');
     });
   } catch (error) {
     console.error('Error connecting to the database:', error.message || error);
