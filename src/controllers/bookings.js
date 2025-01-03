@@ -2,49 +2,23 @@ import createHttpError from 'http-errors';
 import Class from '../models/class.js';
 import Booking from '../models/booking.js';
 import { notifyBookingChange } from '../helpers/booking_change_notifier_handler.js';
-
-function isClassAvailable(bookings, currentTime) {
-  return bookings.every(
-    (booking) =>
-      currentTime < booking.timeRange.start ||
-      currentTime > booking.timeRange.end
-  );
-}
-
-function isBookingOverlapping(existingBookings, newBooking) {
-  return existingBookings.some(
-    (booking) =>
-      !(
-        newBooking.timeRange.end <= booking.timeRange.start ||
-        newBooking.timeRange.start >= booking.timeRange.end
-      )
-  );
-}
-
-function isValidDate(date) {
-  return date instanceof Date && !isNaN(date.getTime());
-}
-
-function forceDateToBeToday(date) {
-  const today = new Date();
-  const parsedDate = new Date(date);
-  return new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    parsedDate.getHours(),
-    parsedDate.getMinutes(),
-    parsedDate.getSeconds()
-  );
-}
+import {
+  forceDateToBeToday,
+  isBookingOverlapping,
+  isClassAvailable,
+  isValidDate,
+} from '../utils/booking_utils.js';
 
 export async function bookClass(req, res, next) {
-  const { classId, timeRange, course, level } = req.body;
+  const { representativeId, classId, timeRange, course, level } = req.body;
   const currentTime = Date.now();
 
-  if (!classId || !timeRange || !timeRange.start) {
+  if (!representativeId || !classId || !timeRange || !timeRange.start) {
     return next(
-      createHttpError(400, 'Missing required fields: classId, timeRange')
+      createHttpError(
+        400,
+        'Missing required fields: representativeId, classId, timeRange'
+      )
     );
   }
   const startTime = forceDateToBeToday(timeRange.start);
@@ -88,6 +62,7 @@ export async function bookClass(req, res, next) {
       );
 
     const booking = new Booking({
+      representativeId,
       class: classId,
       timeRange: { start: startTime, end: endTime },
       course,
@@ -103,7 +78,17 @@ export async function bookClass(req, res, next) {
 
     await class_.save();
     await notifyBookingChange(req.io, class_._id);
-    return res.status(201).json(booking);
+    return res.status(201).json({
+      id: booking._id,
+      ...booking._doc,
+      class: {
+        _id: class_._id,
+        id: class_._id,
+        code: class_.code,
+        fullCode: class_.fullCode,
+        isAvailable: class_.isAvailable,
+      },
+    });
   } catch (error) {
     console.trace(error);
     next(error);
@@ -201,7 +186,7 @@ export async function patchBooking(req, res, next) {
     // Check for overlaps with other bookings
     const isOverlapping = isBookingOverlapping(
       relatedClass.bookings.filter(
-        (bookingId) => bookingId.toString() !== id.toString()
+        (booking) => booking._id.toString() !== id.toString()
       ),
       { timeRange: updatedTimeRange }
     );
@@ -225,7 +210,37 @@ export async function patchBooking(req, res, next) {
 
     await notifyBookingChange(req.io, relatedClass._id);
 
-    res.status(200).json(booking);
+    res.json({
+      id: booking._id,
+      ...booking._doc,
+      class: {
+        _id: relatedClass._id,
+        id: relatedClass._id,
+        code: relatedClass.code,
+        fullCode: relatedClass.fullCode,
+        isAvailable: relatedClass.isAvailable,
+      },
+    });
+  } catch (error) {
+    console.trace(error);
+    next(error);
+  }
+}
+
+export async function getBookingsByRepresentativeId(req, res, next) {
+  const { representativeId: id } = req.query;
+
+  if (!id) {
+    return next(createHttpError(400, 'Representative id is required'));
+  }
+
+  try {
+    const bookings = await Booking.find({ representativeId: id }).populate(
+      'class',
+      'code fullCode isAvailable'
+    );
+
+    res.json(bookings);
   } catch (error) {
     console.trace(error);
     next(error);
