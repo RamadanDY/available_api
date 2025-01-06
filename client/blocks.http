@@ -8,7 +8,7 @@ GET {{ host }}/{{ api }}/blocks/:id
 
 ### GET Classes
 # @name=GetBlockClasses
-GET {{ host }}/{{ api }}/blocks/675c0c4706cf29e3a5d65559/classes
+GET {{ host }}/{{ api }}/blocks/:id/classes
 
 
 ### POST Block

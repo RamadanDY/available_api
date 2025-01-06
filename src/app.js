@@ -9,6 +9,7 @@ import bookingsRouter from './routes/bookings.js';
 import blocksRouter from './routes/blocks.js';
 import feedbackRouter from './routes/feedback.js';
 import morgan from 'morgan';
+import cors from 'cors'; // Import CORS middleware
 import socketInit from './sockets/class_socket.js';
 import setupCronJobs from './utils/cron_job.js';
 
@@ -21,6 +22,15 @@ const PORT = process.env.PORT;
 const HOST = process.env.HOST;
 const API_URL = process.env.API_URL;
 const MONGODB_CONNECTION_STRING = process.env.MONGODB_CONNECTION_STRING;
+
+// Add CORS Middleware
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Allow requests from this frontend origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true, // Allow cookies or authentication headers
+  })
+);
 
 app.use(express.json());
 app.use(morgan('dev'));
@@ -39,8 +49,6 @@ setupCronJobs(io);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
-
-// console.log(process.env);
 
 async function startServer() {
   try {

@@ -23,7 +23,7 @@ export async function getBlocks(req, res, next) {
     const blocks = await Block.find()
       .populate('classes', 'fullCode code isAvailable')
       .sort({ code: 1 });
-    if (!blocks) return next(createHttpError(404, 'Blocks not found'));
+    if (!blocks) return next(createHttpError(404, 'Blocks not found where'));
 
     return res.json(blocks);
   } catch (error) {
