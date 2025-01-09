@@ -12,6 +12,8 @@ Content-Type: application/json; charset=utf-8
   "course": "Information Technology",
   "level": "Level 300"
 }
+///send the Id of the class that has been selected 
+//we get the class from the class eg B02 that they have already selected 
 
 ### PATCH Booking
 # @name=UpdateBooking
