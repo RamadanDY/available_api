@@ -20,6 +20,7 @@ export async function createBlock(req, res, next) {
 
 export async function getBlocks(req, res, next) {
   try {
+    res.send('Hello from getBlocks');
     const blocks = await Block.find()
       .populate('classes', 'fullCode code isAvailable')
       .sort({ code: 1 });
