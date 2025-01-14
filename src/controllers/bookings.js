@@ -195,7 +195,7 @@ export async function patchBooking(req, res, next) {
       return next(
         createHttpError(
           400,
-          'The updated booking time overlaps with another booking'
+          'The updated booking time overlaps with another booking try booking at a different time'
         )
       );
 
