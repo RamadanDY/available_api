@@ -9,7 +9,7 @@ import {
 const router = Router();
 
 router.post('/', createBlock);
-router.get('/', getBlocks);
+router.get('/c', getBlocks);
 router.get('/:id', getBlockById);
 router.get('/:id/classes', getBlockClasses);
 
